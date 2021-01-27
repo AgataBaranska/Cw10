@@ -3,16 +3,19 @@ using System;
 
 namespace Cw5.Models
 {
-    public class Student
-    {
-        public string IndexNumber { get; set; }
-        public string FirstName { get; set; }
+    using System;
+    using System.Collections.Generic;
 
-        public string LastName { get; set; }
+        public partial class Student
+        {
+            public string IndexNumber { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public DateTime BirthDate { get; set; }
+            public int IdEnrollment { get; set; }
 
-        public DateTime BirthDate { get; set; }
-        public int IdEnrollment { get; set; }
-
-
+            public virtual Enrollment IdEnrollmentNavigation { get; set; }
+        
     }
+
 }

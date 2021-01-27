@@ -1,7 +1,8 @@
 ﻿
-using Cw5.DAL;
+
 using Cw5.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Cw5.Controllers
 {
@@ -9,20 +10,63 @@ namespace Cw5.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        private readonly IDbService _dbService;
+        /*private readonly IDbService _dbService;
 
         public StudentsController(IDbService dbService)
         {
             _dbService = dbService;
-        }
+        }*/
 
+
+        //nowa koncowka zwracajaca liste studentow
         [HttpGet]
         public IActionResult GetStudents(string orderBy)
         {
-            return Ok(_dbService.GetStudents());
+            var db = new S19487Context();
+            var res = db.Students.ToList();
+            return Ok(res);
         }
 
+        // nowa końcowka powalajaca na usuniecie studenta
+        [HttpDelete("{index}")]
+        public IActionResult deleteStudent([FromRoute] string index)
+        {
+            var db = new S19487Context();
+            var student = new Student
+            {
+                IndexNumber = index
+            };
+            db.Attach(student);
+            db.Remove(student);
+            db.SaveChanges();
+            return Ok("Student " + index + " zostal usuniety");
+        }
 
+        //nowa koncowka do modyfikacji danych studenta
+        [HttpPut("{index}")]
+        public IActionResult updateStudent([FromRoute] string index, [FromBody] Student newStudent)
+        {
+            var db = new S19487Context();
+
+            var student = new Student
+            {
+                IndexNumber = newStudent.IndexNumber,
+                FirstName = newStudent.FirstName,
+                LastName = newStudent.LastName,
+                BirthDate = newStudent.BirthDate,    
+            };
+
+            db.Attach(student);
+            db.Entry(student).Property("FirstName").IsModified = true;
+            db.Entry(student).Property("LastName").IsModified = true;
+            db.Entry(student).Property("BirthDate").IsModified = true;
+
+            db.SaveChanges();
+
+            return Ok("Dane studenta  zmodyfikowane " + newStudent);
+
+        }
+/*
         [HttpGet("{index}")]
         public IActionResult GetStudent([FromRoute] string index)
         {
@@ -32,23 +76,7 @@ namespace Cw5.Controllers
         }
 
 
-        [HttpDelete("{index}")]
-        public IActionResult deleteStudent([FromRoute] string index)
-        {
-            var rowsAffected = _dbService.RemoveStudent(index);
-            if (rowsAffected == 0) return NotFound($"Studenta o podanym id: {index} nie ma w bazie");
-            return Ok("Usuwanie ukończone");
-        }
 
-        [HttpPut("{index}")]
-        public IActionResult updateStudent([FromRoute] string index, [FromBody] Student newStudent)
-        {
-
-            newStudent.IndexNumber = index;
-            var rowsAffected = _dbService.UpdateStudent(newStudent);
-            if (rowsAffected == 0) return NotFound($"Student o podanym {index} nie znajduje się w bazie");
-            return Ok($"Aktualizacja dokończona");
-        }
 
         [HttpPost]
         public IActionResult AddStudent([FromBody] Student student)
@@ -70,7 +98,7 @@ namespace Cw5.Controllers
             if (studentsEnrollment == null) return NotFound($"Nie odnaleziono zapisów studenta {index}");
             return Ok(studentsEnrollment);
 
-        }
+        }*/
 
 
     }

@@ -22,8 +22,8 @@ namespace Cw5
         //wstrzykiwanie klas przydatnych w wielu miejscach w kodzie(np. logowanie, komunikacja z bd)
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDbService, MssqlDBService>();
-            services.AddTransient<IStudentsDbService, SqlServerDbService>();
+          //  services.AddSingleton<IDbService, MssqlDBService>();
+           // services.AddTransient<IStudentsDbService, SqlServerDbService>();
 
             services.AddControllers();//zarejestrowanie kontrolerów z widokami i stronami
         }
